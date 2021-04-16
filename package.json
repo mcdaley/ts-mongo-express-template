@@ -1,0 +1,25 @@
+{
+  "name": "ts-mongo-express-template",
+  "version": "1.0.0",
+  "description": "Example template for TypeScript app w/ Express and MongoDB",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "cd ./dist; rm -r *; cd ..",
+    "dev":   "export NODE_ENV=development; nodemon --config nodemon.json ./src/index.ts",
+    "dev:debug": "export NODE_ENV=development; nodemon --config nodemon.json --inspect-brk src/index.ts",
+    "start": "export NODE_ENV=development; tsc && node ./dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Daley <mike@mcdaley.com> (https://www.mcdaley.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/node": "^14.14.41",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}

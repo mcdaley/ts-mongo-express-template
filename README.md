@@ -102,6 +102,18 @@ Add the following script commands to the __package.json__ file that will be used
   },
 ```
 
-### Verify the Setup
-Verify that everything is working correctly by starting a simple express server by creating and running an __./src/index.ts__ file using the npm commands.
+### Verify the Basic Express Setup
+Verify that everything is working correctly by starting a simple express server by creating and running an __./src/index.ts__ file using the npm build, clean, dev, and start commands.
 
+## Express Add Ons
+Add the following modules for adding more advanced functionality to our Express server.
+
+```bash
+$ npm install --save cors app-root-path dotenv winston express-winston
+$ npm install --save-dev @types/cors @types/app-root-path @types/dotenv
+$ npm install --save-dev @types/winston
+```
+
+See the __./src/index.ts, ./src/config/config.ts, .env, and ./src/config/winston.ts__ to see how to use the just installed modules.
+
+## MongoDB

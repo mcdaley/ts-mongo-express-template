@@ -6,6 +6,7 @@ import express, { Application }   from 'express'
 import cors                       from 'cors'
 
 import logger                     from './config/winston'
+import documents                  from './routes/v1/document.routes'
 
 /**
  * main()
@@ -18,6 +19,9 @@ app.use(cors({
   origin:         true,
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
 }))
+
+// Routes
+app.use(`/api`, documents)
 
 // Start the server
 const PORT: number | string = process.env.PORT || 4000

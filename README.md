@@ -117,3 +117,11 @@ $ npm install --save-dev @types/winston
 See the __./src/index.ts, ./src/config/config.ts, .env, and ./src/config/winston.ts__ to see how to use the just installed modules.
 
 ## MongoDB
+For the framework, I'm going to use the native mongodb driver instead of mongoose.js because I am also trying to learn more about MongoDB. Install the native mongodb drivers:
+
+```bash
+$ npm install --save mongodb
+$ npm install --save-dev @types/mongodb
+```
+
+### Configure MongoDB Connection

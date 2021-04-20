@@ -4,6 +4,7 @@
 import { MongoClient }    from 'mongodb'
 
 import logger             from './winston'
+import DocumentDAO        from '../models/document.dao'
 
 /**
  * MongoDAO manages the connection to the MongoDB for the app. First, it
@@ -26,6 +27,10 @@ class MongoDAO {
     return new Promise( async (resolve, reject) => {
       try {
         await this.client.connect()
+        logger.info(`Success, Connected to DB`)
+
+        await this.injectDb()
+
         resolve(true)
       }
       catch(error) {
@@ -35,13 +40,12 @@ class MongoDAO {
     })
   }
 
-  /********** 
   public injectDb() {
     return new Promise( async (resolve, reject) => {
       logger.info(`Linking DAOs to mongoDB connection`)
       try {
         // Link to all of the DAOs
-        await UsersDAO.injectDB(conn)
+        await DocumentDAO.injectDB(this.client)
 
         resolve(true)
       }
@@ -50,7 +54,6 @@ class MongoDAO {
       }
     })
   }
-  **********/
 
   public close() {
     logger.info(`Close connection to DB: %s`, process.env.MONGODB_URI)

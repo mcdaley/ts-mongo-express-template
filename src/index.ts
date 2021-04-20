@@ -28,20 +28,17 @@ app.use(`/api`, documents)
 const mongoClient = new MongoDAO()
 mongoClient.connect()
   .then( () => {
-    logger.info(`Connected to MongoDB`)
+    // Start the server after connecting to the DB
+    const PORT: number | string = process.env.PORT || 4000
+    app.listen(PORT, () => {
+      logger.info(`TS-Mongo-Express app running on port ${PORT}`)
+    })
   })
   .catch( (error) => {
     // Exit the app if cannot connect to DB
     logger.error(`Failed to connect to MongoDB`)
     logger.error(`Exiting the app...`)
     process.exit(-1)
-  })
-  .finally( () => {
-    // Start the server after connecting to the DB
-    const PORT: number | string = process.env.PORT || 4000
-    app.listen(PORT, () => {
-      logger.info(`TS-Mongo-Express app running on port ${PORT}`)
-    })
   })
 
 // Export the app

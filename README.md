@@ -125,6 +125,29 @@ $ npm install --save-dev @types/mongodb
 ```
 
 ### Configure MongoDB Connection
+Create a __mongo-dao.ts__ file in ./src/config that is used to connect to a MongoDB and to also link all of the DAOs to the client connection. See the source code for the implementation.
+
+#### Create Connection 
+In the index.ts file then add the following code to connect to MongoDB and start the Express server. Since we cannot use await in the index.ts, I've wrapped the connection and express server startup logic into a promise chain, so that I can ensure the app connects to the DB before starting the Express server. If there is an error connecting to the MongoDB then the app will terminate.
+
+```javascript
+// Connect to MongoDB and start the Express server
+const mongoClient = new MongoDAO()
+mongoClient.connect()
+  .then( () => {
+    // Start the server after connecting to the DB
+    const PORT: number | string = process.env.PORT || 4000
+    app.listen(PORT, () => {
+      logger.info(`TS-Mongo-Express app running on port ${PORT}`)
+    })
+  })
+  .catch( (error) => {
+    // Exit the app if cannot connect to DB
+    logger.error(`Failed to connect to MongoDB`)
+    logger.error(`Exiting the app...`)
+    process.exit(-1)
+  })
+```
 
 ## Jest Unit Testing
 

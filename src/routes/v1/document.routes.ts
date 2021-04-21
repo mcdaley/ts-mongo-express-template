@@ -21,7 +21,7 @@ router.post(`/v1/documents`, async (req: Request, res: Response) => {
     const result    = await DocumentDAO.create(document)
     const response  = DocumentMessages.buildDocument(result)
 
-    res.status(response.status).send(response.message)
+    res.status(201).send(response)
   }
   catch(error) {
     logger.error(`Failed to create the document, error= %o`, error)
@@ -38,7 +38,7 @@ router.get(`/v1/documents`, async (req: Request, res: Response) => {
   try {
     const result    = await DocumentDAO.find()
     const response  = DocumentMessages.buildDocumentList(result)
-    res.status(response.status).send(response.message)
+    res.status(200).send(response)
   }
   catch(error) {
     logger.error(`Failed to get list of documents, error= %o`, error)
@@ -56,9 +56,8 @@ router.get(`/v1/documents/:id`, async (req: Request, res: Response) => {
   try {
     const result    = await DocumentDAO.findById(id)
     const response  = DocumentMessages.buildDocument(result)
-    logger.info(`Fetched document = %o`, result)
     
-    res.status(200).send(response.message)
+    res.status(200).send(response)
   }
   catch(error) {
     logger.error(`Error finding document w/ id=[%s], error= %o`, id, error)
@@ -78,7 +77,7 @@ router.get(`/v1/documents/:id`, async (req: Request, res: Response) => {
     const result    = await DocumentDAO.update(id, update)
     const response  = DocumentMessages.buildDocument(result)
     
-    res.status(200).send(response.message)
+    res.status(200).send(response)
   }
   catch(error) {
     logger.error(`Failed to update the document w/ id=[%s], error= %o`, id, error)

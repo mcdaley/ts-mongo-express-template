@@ -9,6 +9,10 @@ import { IDocument }    from './document.dao'
  * Build the JSON response messages for the Document CRUD routes.
  */
 export default class DocumentMessages {
+  /**
+   * Build the API response header for the document messages.
+   * @returns 
+   */
   private  static responseHeader() {
     const responseHeader = {
       responseHeader: {
@@ -21,6 +25,11 @@ export default class DocumentMessages {
     return responseHeader
   }
 
+  /**
+   * Build the API response message the contains a single document.
+   * @param document 
+   * @returns 
+   */
   public static buildDocument(document: IDocument) {
     const message = {
       ...DocumentMessages.responseHeader(),
@@ -29,14 +38,14 @@ export default class DocumentMessages {
       }
     }
 
-    const response = {
-      status:   201,
-      message:  message,
-    }
-
-    return response
+    return message
   }
 
+  /**
+   * Build a API response message the contains a list of documents.
+   * @param documents 
+   * @returns 
+   */
   public static buildDocumentList(documents: IDocument[]) {
     logger.debug(`Build the API response for a list of documents`)
 
@@ -47,12 +56,7 @@ export default class DocumentMessages {
       }
     }
 
-    const response = {
-      status:   200,
-      message:  message,
-    }
-
-    return response
+    return message
   }
 }
 

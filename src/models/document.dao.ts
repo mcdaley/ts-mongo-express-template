@@ -50,12 +50,14 @@ export default class DocumentDAO {
    * @returns {Promise<IDocument>}
    */
    public static create(document: IDocument): Promise<IDocument> {
-    logger.debug(`Create a new document = %o`, document)
+    logger.info(`Create a new document = %o`, document)
 
     return new Promise( async (resolve, reject) => {
       try {
         const  result = await this.documents.insertOne(document)
         const  doc    = result.ops[0]
+
+        logger.debug(`Success, created a new document = %o`, document)
         resolve(doc)
       }
       catch(error) {

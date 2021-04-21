@@ -18,10 +18,10 @@ router.post(`/v1/documents`, async (req: Request, res: Response) => {
   const document: IDocument = {...req.body}
 
   try {
-    const result = await DocumentDAO.create(document)
-    logger.debug(`Created document = %o`, result)
+    const result    = await DocumentDAO.create(document)
+    const response  = DocumentMessages.buildDocument(result)
 
-    res.status(201).send(result)
+    res.status(response.status).send(response.message)
   }
   catch(error) {
     logger.error(`Failed to create the document, error= %o`, error)

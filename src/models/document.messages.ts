@@ -21,6 +21,22 @@ export default class DocumentMessages {
     return responseHeader
   }
 
+  public static buildDocument(document: IDocument) {
+    const message = {
+      ...DocumentMessages.responseHeader(),
+      results: {
+        document: document
+      }
+    }
+
+    const response = {
+      status:   201,
+      message:  message,
+    }
+
+    return response
+  }
+
   public static buildDocumentList(documents: IDocument[]) {
     logger.debug(`Build the API response for a list of documents`)
 

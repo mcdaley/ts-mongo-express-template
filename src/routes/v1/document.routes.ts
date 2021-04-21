@@ -87,6 +87,14 @@ router.get(`/v1/documents/:id`, async (req: Request, res: Response) => {
 })
 
 /**
+ * Delete the document from the DB and return an Http status of 204 w/ an empty
+ * body if the delete was successful. If the record was not deleted then send
+ * and error message w/ the corresponding Http error status.
+ * 
+ * NOTE:
+ * Would I want to be able to return a message with the id of the deleted
+ * document?
+ * 
  * @routes DELETE /api/v1/documents/:id
  */
  router.delete(`/v1/documents/:id`, async (req: Request, res: Response) => {
@@ -95,11 +103,11 @@ router.get(`/v1/documents/:id`, async (req: Request, res: Response) => {
 
   try {
     const result = await DocumentDAO.delete(id)
-    res.status(200).send({id: id, deletedCount: result.deletedCount})
+    res.status(204).send(null)
   }
   catch(error) {
     logger.error(`Failed to delete document w/ id=[%s], error= %s`, id, error)
-    res.status(400).send(error)
+    res.status(error.code).send({message: error.message})
   }
 })
 

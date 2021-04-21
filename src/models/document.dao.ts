@@ -204,10 +204,10 @@ export default class DocumentDAO {
   /**
    * Deletes a document.
    * @param {String} id 
-   * @returns 
+   * @returns Promise<boolean>
    */
-  public static delete(id: string): Promise<any> {
-    logger.debug(`Delete document w/ id=[%s]`, id)
+  public static delete(id: string): Promise<boolean> {
+    logger.info(`Delete document w/ id=[%s]`, id)
 
     const query   = {
       _id:  ObjectId.createFromHexString(id)
@@ -219,22 +219,23 @@ export default class DocumentDAO {
         const  result  = await this.documents.deleteOne(query)
 
         if(result.deletedCount === 0) {
+          logger.error(`Failed to delete document w/ id=[%s] - Not Found`, id)
           reject({
-            status:       404,
-            deletedCount: 0,
-            message:      `Not Found`
+            code:     404,
+            message:  `Document w/ id=[${id}] - Not Found`
           })
         }
         else {
-          resolve({
-            status:       200,
-            deletedCount: `Not Found`
-          })
+          logger.info(`Success, deleted document w/ id=[%s]`, id)
+          resolve(true)
         }
       }
       catch(error) {
         logger.error(`Failed to delete document, id=[%s], error= %o`, id, error)
-        reject(error)
+        reject({
+          code:     400,
+          message:  `Oops, something went wrong`
+        })
       }
     })
   }

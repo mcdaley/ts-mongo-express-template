@@ -75,14 +75,14 @@ router.get(`/v1/documents/:id`, async (req: Request, res: Response) => {
   const update: any     = req.body
 
   try {
-    const result = await DocumentDAO.update(id, update)
-    logger.debug(`Updated document w/ id=[%s], result= %o`, id, result)
-
-    res.status(200).send({message: `Update is OK`})
+    const result    = await DocumentDAO.update(id, update)
+    const response  = DocumentMessages.buildDocument(result)
+    
+    res.status(200).send(response.message)
   }
   catch(error) {
     logger.error(`Failed to update the document w/ id=[%s], error= %o`, id, error)
-    res.status(400).send({message: `Oops, something went wrong`})
+    res.status(error.code).send({message: error.message})
   }
 })
 

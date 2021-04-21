@@ -143,7 +143,7 @@ export default class DocumentDAO {
    * @param options 
    * @returns 
    */
-  public static update(id: string, update = {}, options = {}) {
+  public static update(id: string, update = {}, options = {}): Promise<IDocument> {
     logger.debug(`Update document w/ id=[%s], update = %o`, id, update)
 
     options = {
@@ -179,13 +179,24 @@ export default class DocumentDAO {
           { $set: update },
           options,
         )
-        logger.info(`Updated document w/ id=[%s], result= %o`, id, result)
 
-        resolve(result)
+        if(result.value == null) {
+          reject({
+            code: 404,
+            message: `Document w/ id=[${id}] Not Found`
+          })
+        }
+        else {
+          logger.info(`Updated document w/ id=[%s], doc= %o`, id, result.value)
+          resolve(result.value)
+        }
       }
       catch(error) {
         logger.error(`Failed to update document w/ id=[%s], error= %o`)
-        reject(error)
+        reject({
+          code:     400,
+          message:  `Oops, something went wrong`
+        })
       }
     })
   }

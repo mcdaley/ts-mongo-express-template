@@ -54,18 +54,15 @@ router.get(`/v1/documents/:id`, async (req: Request, res: Response) => {
   const id: string = req.params.id
   
   try {
-    const result = await DocumentDAO.findById(id)
+    const result    = await DocumentDAO.findById(id)
+    const response  = DocumentMessages.buildDocument(result)
     logger.info(`Fetched document = %o`, result)
-
-    if(result == null) {
-      return res.status(404).send({message: `Not Found`})
-    }
     
-    res.status(200).send(result)
+    res.status(200).send(response.message)
   }
   catch(error) {
     logger.error(`Error finding document w/ id=[%s], error= %o`, id, error)
-    res.status(400).send({message: `Oops, something went wrong`})
+    res.status(error.code).send({message: error.message})
   }
 })
 

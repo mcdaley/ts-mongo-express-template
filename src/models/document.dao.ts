@@ -116,11 +116,22 @@ export default class DocumentDAO {
         const result: IDocument = await this.documents.findOne(query, options)
         logger.info(`Fetched document w/ id=[%s], document= %o`, id, result)
 
-        resolve(result)
+        if(result == null) {
+          reject({
+            code:     404,
+            message: `Document w/ id=[${id}] Not Found`
+          })
+        }
+        else {
+          resolve(result)
+        }
       }
       catch(error) {
         logger.error(`Failed to find document w/ id=[%s], error= %o`, id, error)
-        reject(error)
+        reject({
+          code:     400,
+          message:  `Oops, something went wrong`
+        })
       }
     })
   }

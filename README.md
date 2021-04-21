@@ -126,6 +126,16 @@ $ npm install --save-dev @types/mongodb
 
 ### Configure MongoDB Connection
 
+## Architecture Overview
+The typical API flow is to perform a CRUD operation on the data, which returns data and then sending a response to the client. In the case the server also needs to make requests to another API then it needs to build the request from either user input or data returned from a CRUD operation.
+
+### DAOs
+The DAOs are responsible for CRUD operations and only return the data for the
+request or an error.
+
+### Message/Response/Request Builders
+The Message Builders are responsible for building the Response/Request JSON objects for the APIs using the data returned by the DAOs.
+
 ## API Message Format
 __TODO__
 I NEED TO DEFINE A STANDARD MESSAGE FORMAT FOR THE CRUD OPERATIONS AND ERRORS, SO THAT I CAN CREATE APIS RIGHT OUT OF THE BOX. LOOK AT THE GOOGLE DOCS AND OTHER EXAMPLE APIS FOR BEST PRACTICES.
@@ -142,7 +152,8 @@ I should return an error in the DAO with the HTTP status and a message that can 
 
 ```json
 {
-  
+  "code":     "${Numeric Error Code}",
+  "message":  "${Error Message}"
 }
 ```
 

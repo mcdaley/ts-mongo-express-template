@@ -5,6 +5,7 @@ import { Router, Request, Response }      from 'express'
 
 import logger                             from '../../config/winston'
 import DocumentDAO, { IDocument }         from '../../models/document.dao'
+import DocumentMessages                   from '../../models/document.messages'
 
 const router = Router()
 
@@ -35,8 +36,9 @@ router.get(`/v1/documents`, async (req: Request, res: Response) => {
   logger.info(`GET /api/v1/documents`)
 
   try {
-    const result = await DocumentDAO.find()
-    res.status(200).send(result)
+    const result    = await DocumentDAO.find()
+    const response  = DocumentMessages.buildDocumentList(result)
+    res.status(response.status).send(response.message)
   }
   catch(error) {
     logger.error(`Failed to get list of documents, error= %o`, error)

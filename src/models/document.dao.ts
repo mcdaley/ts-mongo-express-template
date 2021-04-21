@@ -84,9 +84,10 @@ export default class DocumentDAO {
 
     return new Promise( async (resolve, reject) => {
       try {
-        const cursor: Cursor      = await this.documents.find(query, options)
-        const result: IDocument[] = await cursor.limit(docsPerPage).skip(page * docsPerPage).toArray()
-        logger.info(`Fetched [%d] documents`, result.length)
+        const count:   number      = await this.documents.countDocuments(query)
+        const cursor:  Cursor      = await this.documents.find(query, options)
+        const result:  IDocument[] = await cursor.limit(docsPerPage).skip(page * docsPerPage).toArray()
+        logger.info(`Fetched [%d] of [%d] documents`, result.length, count)
 
         resolve(result)
       }

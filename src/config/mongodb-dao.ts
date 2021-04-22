@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------
 // src/config/mongodb-dao.ts
 //-----------------------------------------------------------------------------
-import { MongoClient }    from 'mongodb'
+import { Collection, MongoClient }    from 'mongodb'
 
-import logger             from './winston'
-import DocumentDAO        from '../models/document.dao'
+import logger                         from './winston'
+import DocumentDAO                    from '../models/document.dao'
 
 /**
  * MongoDAO manages the connection to the MongoDB for the app. First, it
@@ -40,7 +40,14 @@ class MongoDAO {
     })
   }
 
-  public injectDb() {
+  /**
+   * Link all of the DAOs to the MongoDB client connection, so that they can
+   * run CRUD queries. Need to add the call to the DAO's injectDB() method
+   * for all of the defined DAOs.
+   * 
+   * @returns {Promise<boolean>}
+   */
+  public injectDb(): Promise<boolean> {
     return new Promise( async (resolve, reject) => {
       logger.info(`Linking DAOs to mongoDB connection`)
       try {
@@ -55,6 +62,18 @@ class MongoDAO {
     })
   }
 
+  /**
+   * Return a MongoDB collection that is used for Jest unit testing.
+   * @param   {String} collection 
+   * @returns {Collection}
+   */
+  public conn(collection: string): Collection {
+    return this.client.db().collection(collection)
+  }
+
+  /**
+   * Close the MongoDB connections
+   */
   public close() {
     logger.info(`Close connection to DB: %s`, process.env.MONGODB_URI)
     this.client.close()

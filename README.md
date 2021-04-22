@@ -150,6 +150,40 @@ mongoClient.connect()
 ```
 
 ## Jest Unit Testing
+Install the jest npm modules in the development dependencies. For more details, see [Getting Started w/ Jest and TypeScript](https://basarat.gitbook.io/typescript/intro-1/jest).
+
+```
+$ npm install --save-dev jest @types/jest ts-jest
+```
+
+In the application root directory add the following __jest.config.js__:
+
+```javascript
+module.exports = {
+  "roots": [
+    "<rootDir>/src"
+  ],
+  "testMatch": [
+    "**/__tests__/**/*.+(ts|tsx|js)",
+    "**/?(*.)+(spec|test).+(ts|tsx|js)"
+  ],
+  "transform": {
+    "^.+\\.(ts|tsx)$": "ts-jest"
+  },
+}
+```
+
+The config file sets the source code directory to __./src__, matches files in the '__tests__' directory, and uses __ts-jest__ to transpile the typescript code to javascript.
+
+Finally, add jest to "test" in the "scripts" section of the __package.json__:
+
+```json
+"scripts": {
+  "test": "export NODE_ENV=test; jest"
+}
+```
+
+## VS Code - launch.json
 
 ## Architecture Overview
 The typical API flow is to perform a CRUD operation on the data, which returns data and then sending a response to the client. In the case the server also needs to make requests to another API then it needs to build the request from either user input or data returned from a CRUD operation.

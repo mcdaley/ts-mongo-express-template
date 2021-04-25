@@ -4,6 +4,7 @@
 import { Router, Request, Response }      from 'express'
 
 import logger                             from '../../config/winston'
+import DocumentMiddleware                 from '../../middleware/doument.middleware'
 import DocumentDAO, { IDocument }         from '../../models/document.dao'
 import DocumentMessages                   from '../../models/document.messages'
 
@@ -12,7 +13,11 @@ const router = Router()
 /**
  * @route POST /api/v1/documents
  */
-router.post(`/v1/documents`, async (req: Request, res: Response) => {
+router.post(
+  `/v1/documents`, 
+  DocumentMiddleware.validateDocument, 
+  async (req: Request, res: Response 
+) => {
   logger.info(`POST /api/v1/documents`)
 
   const document: IDocument = {...req.body}
@@ -47,11 +52,16 @@ router.get(`/v1/documents`, async (req: Request, res: Response) => {
 })
 
 /**
- * @routes GET /api/v1/documents/:id
+ * @routes GET /api/v1/documents/:documentId
  */
-router.get(`/v1/documents/:id`, async (req: Request, res: Response) => {
-  logger.info(`GET /api/v1/couments/%s`, req.params.id)  
-  const id: string = req.params.id
+router.get(
+  `/v1/documents/:documentId`, 
+  DocumentMiddleware.validateDocumentId,
+  DocumentMiddleware.validateDocumentExists,
+  async (req: Request, res: Response) => 
+{
+  logger.info(`GET /api/v1/couments/%s`, req.params.documentId)  
+  const id: string = req.params.documentId
   
   try {
     const result    = await DocumentDAO.findById(id)
@@ -66,11 +76,16 @@ router.get(`/v1/documents/:id`, async (req: Request, res: Response) => {
 })
 
 /**
- * @routes PUT /api/v1/documents/:id
+ * @routes PUT /api/v1/documents/:documentId
  */
- router.put(`/v1/documents/:id`, async (req: Request, res: Response) => {
-  logger.info(`PUT /api/v1/couments/%s, body= %o`, req.params.id, req.body)
-  const id:     string  = req.params.id
+router.put(`/v1/documents/:documentId`, 
+  DocumentMiddleware.validateDocumentId,
+  DocumentMiddleware.validateDocumentExists,
+  DocumentMiddleware.validateUpdateDocument,
+  async (req: Request, res: Response) => 
+{
+  logger.info(`PUT /api/v1/couments/%s, body= %o`, req.params.documentId, req.body)
+  const id:     string  = req.params.documentId
   const update: any     = req.body
 
   try {
@@ -94,11 +109,15 @@ router.get(`/v1/documents/:id`, async (req: Request, res: Response) => {
  * Would I want to be able to return a message with the id of the deleted
  * document?
  * 
- * @routes DELETE /api/v1/documents/:id
+ * @routes DELETE /api/v1/documents/:documentId
  */
- router.delete(`/v1/documents/:id`, async (req: Request, res: Response) => {
-  logger.info(`DELETE /api/v1/couments/%s`, req.params.id)
-  const id: string = req.params.id
+router.delete(`/v1/documents/:documentId`, 
+  DocumentMiddleware.validateDocumentId,
+  DocumentMiddleware.validateDocumentExists,
+  async (req: Request, res: Response) => 
+{
+  logger.info(`DELETE /api/v1/couments/%s`, req.params.documentId)
+  const id: string = req.params.documentId
 
   try {
     const result = await DocumentDAO.delete(id)

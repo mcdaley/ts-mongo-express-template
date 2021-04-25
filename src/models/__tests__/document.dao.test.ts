@@ -5,7 +5,6 @@ import '../../config/config'
 
 import { ObjectId }                 from 'bson'
 
-//* import logger                       from '../../config/winston'
 import MongoDAO                     from '../../config/mongodb-dao'
 import DocumentDAO, { IDocument }   from '../document.dao'
 

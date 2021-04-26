@@ -10,9 +10,19 @@ import logger                                 from '../config/winston'
  * @interface IDocument
  */
 export interface IDocument {
-  _id?:       ObjectId,
+  _id?:       string,
   title:      string,
   author:     string,
+  summary?:   string,
+}
+
+/**
+ * Interface for updating a Document object
+ * @interface IUpdateDocument
+ */
+export interface IUpdateDocument {
+  title?:     string,
+  author?:    string,
   summary?:   string,
 }
 
@@ -109,7 +119,7 @@ export default class DocumentDAO {
     logger.debug(`Find document w/ id=[%s]`, id)
 
     const query   = {
-      _id:  ObjectId.createFromHexString(id)
+      _id: id,
     }
     const options = {}
 
@@ -141,11 +151,11 @@ export default class DocumentDAO {
   /**
    * Update the document w/ the specified fields.
    * @param id 
-   * @param update 
+   * @param {IUpdateDocument} update 
    * @param options 
    * @returns 
    */
-  public static update(id: string, update = {}, options = {}): Promise<IDocument> {
+  public static update(id: string, update: IUpdateDocument = {}, options = {}): Promise<IDocument> {
     logger.debug(`Update document w/ id=[%s], update = %o`, id, update)
 
     options = {
@@ -177,7 +187,7 @@ export default class DocumentDAO {
         )
         *********/
         const result = await this.documents.findOneAndUpdate(
-          { _id:  ObjectId.createFromHexString(id) },
+          { _id:  id },
           { $set: update },
           options,
         )
@@ -212,7 +222,7 @@ export default class DocumentDAO {
     logger.info(`Delete document w/ id=[%s]`, id)
 
     const query   = {
-      _id:  ObjectId.createFromHexString(id)
+      _id:  id,
     }
     const options = {}
 

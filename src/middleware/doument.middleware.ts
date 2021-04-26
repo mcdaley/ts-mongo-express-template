@@ -92,7 +92,7 @@ export default class DocumentMiddleware {
    */
   public static validateDocumentId(req: Request, res: Response, next: NextFunction) {
     if(!ObjectID.isValid(req.params.documentId)) {
-      const message = `Invalid ObjectID=[${req.params.documentId}]`
+      const message = `Invalid document Id = ${req.params.documentId}`
       logger.error(`${message}`)
       return res.status(400).send({message: message})
     }

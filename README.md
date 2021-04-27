@@ -153,7 +153,7 @@ mongoClient.connect()
 Install the jest npm modules in the development dependencies. For more details, see [Getting Started w/ Jest and TypeScript](https://basarat.gitbook.io/typescript/intro-1/jest).
 
 ```
-$ npm install --save-dev jest @types/jest ts-jest
+$ npm install --save-dev jest @types/jest ts-jest supertest @types/supertest
 ```
 
 In the application root directory add the following __jest.config.js__:

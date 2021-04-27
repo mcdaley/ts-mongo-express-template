@@ -84,7 +84,8 @@ describe(`DocumentDAO`, () => {
     describe(`Fetch a List of Documents`, () => {
       it(`Returns a list of ducuments`, async () => {
         const result = await DocumentDAO.find()
-        expect(result.length).toBe(3)
+        expect(result.documents.length).toBe(3)
+        expect(result.totalCount).toBe(3)
       })
     })
 
@@ -121,8 +122,8 @@ describe(`DocumentDAO`, () => {
         const result  = await DocumentDAO.delete(id)
         expect(result).toBe(true)
 
-        const list    = await DocumentDAO.find({})
-        expect(list.length).toBe(2)
+        const list = await DocumentDAO.find({})
+        expect(list.documents.length).toBe(2)
       })
     })
   })

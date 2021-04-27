@@ -140,12 +140,6 @@ describe(`Document Routes`, () => {
     })
   })
 
-  /**
-   * [x] 400 error for invalid documentId
-   * [x] 404 error for document not found
-   * 400 error for invalid updated document
-   * 200 for successful update
-   */
   describe(`PUT /api/v1/documents/:documentId`, () => {
     it(`Returns a 400 error for an invalid document Id`, async () => {
       const invalidDocumentId = 'bad'
@@ -227,7 +221,7 @@ describe(`Document Routes`, () => {
       expect(response.status).toBe(204)
       
       // Verify document is deleted from the DB
-      const documents = await DocumentDAO.find()
+      const { documents } = await DocumentDAO.find()
       expect(documents.length).toBe(books.length - 1)
     })
   })

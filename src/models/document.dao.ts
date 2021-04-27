@@ -26,6 +26,11 @@ export interface IUpdateDocument {
   summary?:   string,
 }
 
+export interface IDocumentList {
+  documents:  IDocument[],
+  totalCount: number,
+}
+
 /**
  * @class DocumentDAO
  */
@@ -84,7 +89,7 @@ export default class DocumentDAO {
    * @param   {Object} options 
    * @returns {Promise<IDocument[]>}
    */
-  public static find(query = {}, options = {}): Promise<IDocument[]> {
+  public static find(query = {}, options = {}): Promise<IDocumentList> {
     logger.debug(`Get list of documents`)
 
     ///////////////////////////////////////////////////////////////////////////
@@ -101,7 +106,12 @@ export default class DocumentDAO {
         const result:  IDocument[] = await cursor.limit(docsPerPage).skip(page * docsPerPage).toArray()
         logger.info(`Fetched [%d] of [%d] documents`, result.length, count)
 
-        resolve(result)
+        const documentList: IDocumentList = {
+          documents:  result,
+          totalCount: count,
+        }
+
+        resolve(documentList)
       }
       catch(error) {
         logger.error(`Failed to fetch documents, error= %o`, error)

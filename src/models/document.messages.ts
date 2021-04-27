@@ -1,8 +1,8 @@
 //-----------------------------------------------------------------------------
 // src/models/document.messages.ts
 //-----------------------------------------------------------------------------
-import logger           from '../config/winston'
-import { IDocument }    from './document.dao'
+import logger                         from '../config/winston'
+import { IDocument, IDocumentList }   from './document.dao'
 
 
 /**
@@ -46,13 +46,13 @@ export default class DocumentMessages {
    * @param documents 
    * @returns 
    */
-  public static buildDocumentList(documents: IDocument[]) {
+  public static buildDocumentList(documents: IDocumentList) {
     logger.debug(`Build the API response for a list of documents`)
 
     const message = {
       ...DocumentMessages.responseHeader(),
       results: {
-        documents: [...documents]
+        ...documents,
       }
     }
 

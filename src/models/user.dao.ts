@@ -1,22 +1,28 @@
 //-----------------------------------------------------------------------------
 // src/models/user.dao.ts
 //-----------------------------------------------------------------------------
-import { MongoClient, Collection }    from 'mongodb'
-import logger                         from '../config/winston'
+import { MongoClient, Collection, ObjectId }    from 'mongodb'
+import logger                                   from '../config/winston'
 
 /**
  * @interface IUser
  */
 export interface IUser {
-  _id?:     string,
-  email:    string,
-  password: string,
+  _id?:             ObjectId,
+  email:            string,
+  password:         string,
 }
 
 export interface IRegisterUser {
   email:            string,
   password:         string,
   confirmPassword:  string,
+}
+
+export interface IUserAuthToken {
+  _id:              string,
+  email:            string,
+  expires:          number,
 }
 
 /**
@@ -83,7 +89,8 @@ export default class UserDAO {
     return new Promise( async (resolve, reject) => {
       try {
         const query   = {email: email}
-        const options = {projection: {password: 0}} 
+        //* const options = {projection: {password: 0}}
+        const options = {}
         const result  = await this.users.findOne(query, options)
 
         //* if(result == null) {

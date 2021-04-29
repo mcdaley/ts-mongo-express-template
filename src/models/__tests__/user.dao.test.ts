@@ -13,17 +13,17 @@ describe(`UserDAO`, () => {
 
   let users: IUser[] = [
     {
-      _id:      new ObjectId().toHexString(),
+      _id:      new ObjectId(),
       email:    "marv@bills.com",
       password: "secret123",
     },
     {
-      _id:      new ObjectId().toHexString(),
+      _id:      new ObjectId(),
       email:    "bruce@bills.com",
       password: "sackmaster",
     },
     {
-      _id:      new ObjectId().toHexString(),
+      _id:      new ObjectId(),
       email:    "thurmon@bills.com",
       password: "password123",
     }
@@ -87,7 +87,7 @@ describe(`UserDAO`, () => {
         const email   = users[0].email
         const result  = await UserDAO.findByEmail(email)
 
-        expect(result._id).toBe(users[0]._id)
+        expect(result._id).toEqual(users[0]._id)
         expect(result.email).toBe(users[0].email)
       })
 

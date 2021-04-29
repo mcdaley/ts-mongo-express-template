@@ -10,7 +10,7 @@ import logger                                 from '../config/winston'
  * @interface IDocument
  */
 export interface IDocument {
-  _id?:       string,
+  _id?:       ObjectId,
   title:      string,
   author:     string,
   summary?:   string,
@@ -129,7 +129,7 @@ export default class DocumentDAO {
     logger.debug(`Find document w/ id=[%s]`, id)
 
     const query   = {
-      _id: id,
+      _id: new ObjectId(id),
     }
     const options = {}
 
@@ -196,8 +196,9 @@ export default class DocumentDAO {
           options,
         )
         *********/
+        const filter = { _id:  new ObjectId(id) }
         const result = await this.documents.findOneAndUpdate(
-          { _id:  id },
+          filter,
           { $set: update },
           options,
         )
@@ -232,13 +233,14 @@ export default class DocumentDAO {
     logger.info(`Delete document w/ id=[%s]`, id)
 
     const query   = {
-      _id:  id,
+      _id:  new ObjectId(id),
     }
     const options = {}
 
     return new Promise( async (resolve, reject) => {
       try {
-        const  result  = await this.documents.deleteOne(query)
+        const  finder  = await this.documents.findOne(query, options)
+        const  result  = await this.documents.deleteOne(query, options)
 
         if(result.deletedCount === 0) {
           logger.error(`Failed to delete document w/ id=[%s] - Not Found`, id)

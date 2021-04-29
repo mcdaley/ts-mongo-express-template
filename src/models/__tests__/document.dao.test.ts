@@ -13,19 +13,19 @@ describe(`DocumentDAO`, () => {
 
   let books: IDocument[] = [
     {
-      _id:      new ObjectId().toHexString(),
+      _id:      new ObjectId(),
       title:    "Harry Potter and the Sorcerers Stone",
       author:   "J. K. Rowling",
       summary:  "A young wizard goes to Hogwarts",
     },
     {
-      _id:      new ObjectId().toHexString(),
+      _id:      new ObjectId(),
       title:    "The Old Man and the Sea",
       author:   "Earnest Hemingway",
       summary:  "The one that got away",
     },
     {
-      _id:      new ObjectId().toHexString(),
+      _id:      new ObjectId(),
       title:    "A Tale of Two Cities",
       author:   "Charles Dickens",
       summary:  "The French Revolution",
@@ -91,8 +91,8 @@ describe(`DocumentDAO`, () => {
 
     describe(`Find Document by Id`, () => {
       it(`Returns the document`, async () => {
-        const id      = books[0]._id
-        const result  = await DocumentDAO.findById(<string>id)
+        const id      = <string>books[0]._id?.toHexString()
+        const result  = await DocumentDAO.findById(id)
         expect(result.title).toBe(books[0].title)
         expect(result.author).toBe(books[0].author)
       })
@@ -100,7 +100,7 @@ describe(`DocumentDAO`, () => {
 
     describe(`Update a Document`, () => {
       it(`Updates a document`, async () => {
-        const id                      = <string>books[1]._id
+        const id                      = <string>books[1]._id?.toHexString()
         const update: IUpdateDocument = { 
           title:    `A Farewell To Arms`,
           summary:  `Another war novel`,
@@ -118,7 +118,7 @@ describe(`DocumentDAO`, () => {
 
     describe(`Delete a Document`, () => {
       it(`Deletes a document`, async () => {
-        const id      = <string>books[2]._id
+        const id      = <string>books[2]._id?.toHexString()
         const result  = await DocumentDAO.delete(id)
         expect(result).toBe(true)
 

@@ -16,17 +16,17 @@ describe(`User Routes`, () => {
 
   let users: IUser[] = [
     {
-      _id:      new ObjectId().toHexString(),
+      _id:      new ObjectId(),
       email:    "marv@bills.com",
       password: "secret123",
     },
     {
-      _id:      new ObjectId().toHexString(),
+      _id:      new ObjectId(),
       email:    "bruce@bills.com",
       password: "sackmaster",
     },
     {
-      _id:      new ObjectId().toHexString(),
+      _id:      new ObjectId(),
       email:    "thurmon@bills.com",
       password: "password123",
     }
@@ -61,6 +61,9 @@ describe(`User Routes`, () => {
     await mongoClient.conn(`users`).deleteMany({})
   })
 
+  /**
+   * POST /api/v1/register
+   */
   describe(`POST /api/v1/register`, () => { 
     it(`Returns 400 error for an invalid user`, async () => {
       let response = await request(app).post(`/api/v1/register`).send({})
@@ -153,6 +156,74 @@ describe(`User Routes`, () => {
 
       expect(result.length).toBe(1)
       expect(result[0].email).toBe(user.email)
+    })
+  })
+
+  describe(`POST /api/v1/login`, () => {
+    it(`Returns 400 error for an invalid user`, async () => {
+      let response = await request(app).post(`/api/v1/login`).send({})
+      expect(response.status).toBe(400)
+      expect(response.body.message).toMatch(/is required/i)
+
+      response = await request(app).post(`/api/v1/login`).send({
+        email:    users[0].email
+      })
+      expect(response.status).toBe(400)
+      expect(response.body.message).toMatch(/is required/i)
+
+      response = await request(app).post(`/api/v1/login`).send({
+        password: users[0].password,
+      })
+      expect(response.status).toBe(400)
+      expect(response.body.message).toMatch(/is required/i)
+    })
+
+    it(`Returns 400 error if the email is invalid`, () => {
+      const invalidEmails = [`bob`, `bob@com`, `@email.com`]
+      
+      invalidEmails.forEach( async (email) => {
+        let endUser   = {
+          email:    email,
+          password: users[0].password,
+        }
+        let response  = await request(app).post(`/api/v1/login`).send(endUser)
+
+        expect(response.status).toBe(400)
+        expect(response.body.message).toMatch(/must be a valid email/i)
+      })
+    })
+
+    it(`Returns 404 error if email is not found`, async () => {
+      let response = await request(app).post(`/api/v1/login`).send({
+        email:            `unregistered@bills.com`,
+        password:         `password123`,
+      })
+
+      expect(response.status).toBe(404)
+      expect(response.body.message).toMatch(/email not found/i)
+    })
+
+    it(`Returns 400 error if user enters wrong password`, async () => {
+      let user = {
+        email:    users[0].email,
+        password: `wrongPassword`,
+      }
+      let response = await request(app).post(`/api/v1/login`).send(user)
+
+      expect(response.status).toBe(400)
+      expect(response.body.message).toMatch(/invalid credentials/i)
+    })
+
+    it(`Logs user into the application`, async () => {
+      let response = await request(app).post(`/api/v1/login`).send({
+        email:    users[1].email,
+        password: users[1].password,
+      })
+
+      expect(response.status).toBe(200)
+      expect(response.body.user.email).toBe(users[1].email)
+      expect(response.body.user._id).toBe(users[1]._id?.toHexString())
+      expect(response.header.authorization).toMatch(/Bearer/)
     })
   })
 })

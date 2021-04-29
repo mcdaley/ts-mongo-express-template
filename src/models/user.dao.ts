@@ -13,6 +13,12 @@ export interface IUser {
   password: string,
 }
 
+export interface IRegisterUser {
+  email:            string,
+  password:         string,
+  confirmPassword:  string,
+}
+
 /**
  * @class UserDAO
  */
@@ -51,8 +57,9 @@ export default class UserDAO {
 
     return new Promise( async (resolve, reject) => {
       try {
-        const result  = await this.users.insertOne(user)
-        const endUser = result.ops[0]
+        const  result  = await this.users.insertOne(user)
+        let    endUser = result.ops[0]
+        delete endUser.password         // Remove password from response
 
         logger.debug(`Success, created a new user = %o`, endUser)
         resolve(endUser)

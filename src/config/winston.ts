@@ -20,7 +20,7 @@ var options = {
     maxFiles:         5,
     colorize:         false,
     format:           combine(
-      label({ label: 'ts-mongo-express-template' }),
+      label({ label: process.env.APP_NAME }),
       timestamp({
         format: 'YYYY-MM-DD HH:mm:ss'
       }),
@@ -35,7 +35,7 @@ var options = {
     json:             false,
     colorize:         true,
     format:           combine(
-      label({ label: 'ts-mongo-express-template' }),
+      label({ label: process.env.APP_NAME }),
       timestamp({
         format: 'YYYY-MM-DD HH:mm:ss'
       }),

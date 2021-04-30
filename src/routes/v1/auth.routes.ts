@@ -55,7 +55,7 @@ router.post(
         return res.status(400).send(error)
       }
       
-      logger.debug('[MCD] JWT_EXPIRATION_MS= %d', parseInt(<string>process.env.JWT_EXPIRATION_MS))
+      //* logger.debug('[MCD] JWT_EXPIRATION_MS= %d', parseInt(<string>process.env.JWT_EXPIRATION_MS))
       const payload: IUserAuthToken = {
         _id:      user._id,
         email:    user.email,
@@ -71,6 +71,7 @@ router.post(
 
         // Generate a signed json web token and return it in the response
         const token = jwt.sign(JSON.stringify(payload), <string>process.env.SECRET);
+        logger.debug(`Login, set token= %o`, token)
 
         res.status(200).set({Authorization: `Bearer ${token}`}).send({user: payload})
       })

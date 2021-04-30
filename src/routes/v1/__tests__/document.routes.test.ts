@@ -9,9 +9,17 @@ import { ObjectId }                   from 'bson'
 import { app }                        from '../../../index'
 import MongoDAO                       from '../../../config/mongodb-dao'
 import DocumentDAO, { IDocument }     from '../../../models/document.dao'
+import { IUser } from 'src/models/user.dao'
 
 describe(`Document Routes`, () => {
   let mongoClient: MongoDAO
+
+  let user: IUser[] = [
+    {
+      email:      `bruce@bills.com`,
+      password:   `password123`,
+    },
+  ]
 
   let books: IDocument[] = [
     {
@@ -34,6 +42,20 @@ describe(`Document Routes`, () => {
     }
   ]
 
+  let   jwt: string
+  let   credentials   = {email: user[0].email, password: user[0].password}
+
+  const login = () => {
+    return new Promise( async (resolve, reject) => {
+      const response = await request(app).post(`/api/v1/login`).send(credentials)
+    
+      //* console.log(`[DEBUG] response.header["authorization"]= `, response.header[`authorization`])
+      jwt = response.header[`authorization`]
+
+      resolve(true)
+    })
+  }
+
   /**
    * Connect to MongoDB before running tests.
    */
@@ -53,14 +75,18 @@ describe(`Document Routes`, () => {
    * Load the data before each test.
    */
   beforeEach( async () => {
-    const docs = await mongoClient.conn(`documents`).insertMany(books)
+    //* console.log(`[DEBUG] beforeEach() -> insertMany`)
+    const docs  = await mongoClient.conn(`documents`).insertMany(books)
+    const users = await mongoClient.conn(`users`).insertMany(user)
   })
 
   /**
    * Delete the data after every test.
    */
   afterEach( async () => {
+    //* console.log(`[DEBUG] afterEach() -> deleteMany`)
     await mongoClient.conn(`documents`).deleteMany({})
+    await mongoClient.conn(`users`).deleteMany({})
   })
 
   describe(`POST /api/v1/documents`, () => {
@@ -118,30 +144,63 @@ describe(`Document Routes`, () => {
   })
 
   describe(`GET /api/v1/documets/:documentId`, () => {
-    it(`Returns a 400 error for an invalid documentId`, async () => {
-      const invalidDocumentId = `bad`
-      const response          = await request(app).get(`/api/v1/documents/${invalidDocumentId}`)
-
-      expect(response.status).toBe(400)
-      expect(response.body.message).toMatch(/invalid document id/i)
+    describe(`Unauthenticated Requests`, () => {
+      it(`Returns 401 for non-authenticated request`, (done) => {
+        const documentId = books[0]._id
+        request(app)
+          .get(`/api/v1/documents/${documentId}`)
+          .expect(401)
+          .expect( (res) => {
+            expect(res.body.message).toMatch(/unauthorized/i)
+          })
+          .end(done)
+      })
     })
+    
+    describe(`Authenticated Requests`, () => {
+      beforeEach( async () => {
+        //* console.log(`[DEBUG] beforeEach() -> login`)
+        await login()
+      })
 
-    it(`Returns a 404 error when the document Id is not found`, async () => {
-      const notFoundDocumentId  = new ObjectId().toHexString()
-      const response            = await request(app).get(`/api/v1/documents/${notFoundDocumentId}`)
+      it(`Returns a 400 error for an invalid documentId`, (done) => {
+        const invalidDocumentId = `bad`
+        request(app)
+          .get(`/api/v1/documents/${invalidDocumentId}`)
+          .set('Authorization', jwt)
+          .expect(400)
+          .then( (response) => {
+            expect(response.body.message).toMatch(/invalid document id/i)
+            done()
+          })
+      })
 
-      expect(response.status).toBe(404)
-      expect(response.body.message).toMatch(/not found/i)
-    })
+      it(`Returns a 404 error when the document Id is not found`, (done) => {
+        const notFoundDocumentId  = new ObjectId().toHexString()
+        request(app)
+          .get(`/api/v1/documents/${notFoundDocumentId}`)
+          .set(`Authorization`, jwt)
+          .expect(404)
+          .then( (response) => {
+            expect(response.body.message).toMatch(/not found/i)
+            done()
+          })        
+      })
 
-    it(`Returns the document`, async () => {
-      const documentId    = <string>books[1]._id?.toHexString()
-      const response      = await request(app).get(`/api/v1/documents/${documentId}`)
-      const { document }  = response.body.results
+      it(`Returns the document`, (done) => {
+        const documentId    = <string>books[1]._id?.toHexString()
+        request(app)
+          .get(`/api/v1/documents/${documentId}`)
+          .set('Authorization', jwt)
+          .expect(200)
+          .then( (response) => {
+            const { document }  = response.body.results
 
-      expect(response.status).toBe(200)
-      expect(document.title).toBe(books[1].title)
-      expect(document.author).toBe(books[1].author)
+            expect(document.title).toBe(books[1].title)
+            expect(document.author).toBe(books[1].author)
+            done()
+          })
+      })
     })
   })
 

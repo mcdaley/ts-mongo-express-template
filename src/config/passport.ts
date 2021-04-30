@@ -38,8 +38,28 @@ async (email, password, done) => {
     logger.error('Failed to authenticate user w/ email=[%s], err=[%o]', email, error)
     return done(error)
   }
+}))
+
+/**
+ * Setup up JSON Web Token strategy that will verify if a user has a
+ * valid JSON Web Token by extracting the Bearer token in the 'Authorization'
+ * header of the request.
+ */
+/********
+ passport.use(new JWTStrategy({
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey:    process.env.SECRET,
+},
+(jwtPayload, done) => {
+  logger.debug(`[MIKE] Checking out the jwtPayload= %o`, jwtPayload)
+  if(Date.now() > jwtPayload.expires) {
+    return done({code: 401, message: 'authorization token expired'}, false)
+  }
+
+  return done(null, jwtPayload)
 }
 ))
+ *******/
 
 // Export the passport module
 export default passport

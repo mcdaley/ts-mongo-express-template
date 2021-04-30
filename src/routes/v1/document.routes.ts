@@ -4,11 +4,17 @@
 import { Router, Request, Response }      from 'express'
 
 import logger                             from '../../config/winston'
+import AuthMiddleware                     from '../../middleware/auth.middleware'
 import DocumentMiddleware                 from '../../middleware/doument.middleware'
 import DocumentDAO, { IDocument }         from '../../models/document.dao'
 import DocumentMessages                   from '../../models/document.messages'
 
 const router = Router()
+
+/**
+ * Verify the request is authenticated for all of the document routes.
+ */
+//* router.all(`/v1/documents`, AuthMiddleware.authenticateRequest)
 
 /**
  * @route POST /api/v1/documents
@@ -56,6 +62,7 @@ router.get(`/v1/documents`, async (req: Request, res: Response) => {
  */
 router.get(
   `/v1/documents/:documentId`, 
+  AuthMiddleware.authenticateRequest,
   DocumentMiddleware.validateDocumentId,
   DocumentMiddleware.validateDocumentExists,
   async (req: Request, res: Response) => 

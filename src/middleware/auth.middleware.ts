@@ -4,7 +4,10 @@
 import { Request, Response, NextFunction }    from 'express'
 import Joi                                    from 'joi'
 import { ObjectID }                           from 'bson'
+import { ExtractJwt }                         from 'passport-jwt'
+import jwt                                    from 'jsonwebtoken'
 
+import passport                               from '../config/passport'
 import logger                                 from '../config/winston'
 import UserDAO                                from '../models/user.dao'
 
@@ -86,4 +89,48 @@ export default class AuthMiddleware {
 
     next()
   }
+
+  /**
+   * Validate the jwt authorization token in the request's header.
+   */
+  public static authenticateRequest(req: Request, res: Response, next: NextFunction) {
+    const authHeader  = req.headers['authorization']
+    const token       = authHeader && authHeader.split(' ')[1]
+    const secret      = <string>process.env.SECRET
+
+    if(token == null) {
+      return res.status(401).send({message: `Unauthorized`})
+    }
+
+    jwt.verify(token, secret, (err: any, user: any) => {
+      if (err) {
+        logger.error(`User is not authorized, err= %o`, err)
+        return res.status(403).send({message: `Forbidden`})
+      }
+  
+      req.user = user
+      next()
+    })
+  }
+  
+  /****
+  public static authenticateJwt(req: Request, res: Response, next: NextFunction) {
+    logger.debug(`Authenticate the JWT token`)
+    passport.authenticate('jwt', { session: false }, function(error, user, info) {
+      if(error) {
+        logger.error('Unauthorized access to protected route, error= %o', error)
+        return res.status(401).send({error})
+      }
+  
+      if(!user) {
+        logger.error('Unauthorized access to protected route, error= %o', error)
+        let authError = {code: 401, message: 'Not authorized'}
+        return res.status(401).send({error: authError})
+      }
+  
+      req.user = user;
+      next();
+    })(req, res, next);
+  }
+  *****/
 }

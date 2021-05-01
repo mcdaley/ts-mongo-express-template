@@ -20,7 +20,8 @@ const router = Router()
  * @route POST /api/v1/documents
  */
 router.post(
-  `/v1/documents`, 
+  `/v1/documents`,
+  AuthMiddleware.authenticateRequest,
   DocumentMiddleware.validateDocument, 
   async (req: Request, res: Response 
 ) => {
@@ -43,7 +44,10 @@ router.post(
 /**
  * @route GET /api/v1/documents
  */
-router.get(`/v1/documents`, async (req: Request, res: Response) => {
+router.get(`/v1/documents`, 
+  AuthMiddleware.authenticateRequest,
+  async (req: Request, res: Response) => 
+{
   logger.info(`GET /api/v1/documents`)
 
   try {
@@ -86,6 +90,7 @@ router.get(
  * @routes PUT /api/v1/documents/:documentId
  */
 router.put(`/v1/documents/:documentId`, 
+  AuthMiddleware.authenticateRequest,
   DocumentMiddleware.validateDocumentId,
   DocumentMiddleware.validateDocumentExists,
   DocumentMiddleware.validateUpdateDocument,
@@ -119,6 +124,7 @@ router.put(`/v1/documents/:documentId`,
  * @routes DELETE /api/v1/documents/:documentId
  */
 router.delete(`/v1/documents/:documentId`, 
+  AuthMiddleware.authenticateRequest,
   DocumentMiddleware.validateDocumentId,
   DocumentMiddleware.validateDocumentExists,
   async (req: Request, res: Response) => 

@@ -43,7 +43,7 @@
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "args": [
         "${fileBasenameNoExtension}",
-        "--config",
+        "--runInBand --maxWorkers=1 --config",
         "jest.config.js"
       ],
       "console": "integratedTerminal",

@@ -160,7 +160,7 @@ mongoClient.connect()
   .then( () => {
     // Start the server after connecting to the DB
     const PORT: number | string = process.env.PORT || 4000
-    app.listen(PORT, () => {
+    server = app.listen(PORT, () => {
       logger.info(`TS-Mongo-Express app running on port ${PORT}`)
     })
   })

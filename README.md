@@ -7,8 +7,25 @@ Example app template for building TypeScript app with MongoDB and Express
 $ mkdir ${project-name}
 $ cd    ${project-name}
 $ npm   init -y
+$ git   init .
 $ touch .gitignore
 $ vi    .gitignore
+```
+
+### Project Structure
+The project will have the following structure
+
+```
+${project}/src
+          /dist
+          /logs
+          /node_modules
+          package.json
+          tsconfig.json
+          nodemon.json
+          .gitignore
+          .env
+          .vscode/launch.json
 ```
 
 Add the following to the __.gitignore__ file.
@@ -100,6 +117,12 @@ Add the following script commands to the __package.json__ file that will be used
     "start": "export NODE_ENV=development; tsc && node ./dist/index.js",
     "test": "export NODE_ENV=test; jest"
   },
+```
+
+Update the \"main\" section to point to the compiled index.js file:
+
+```json
+"main": "./dist/index.js",
 ```
 
 ### Verify the Basic Express Setup

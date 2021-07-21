@@ -56,9 +56,9 @@ mongoClient.connect()
   })
 
 // Gracefully shutdown the express server
-process.on("SIGINT",  handleShutdownGracefully);
-process.on("SIGTERM", handleShutdownGracefully);
-process.on("SIGHUP",  handleShutdownGracefully);
+process.on("SIGINT",  handleShutdownGracefully)
+process.on("SIGTERM", handleShutdownGracefully)
+process.on("SIGHUP",  handleShutdownGracefully)
 
 // Export the app
 export { app }

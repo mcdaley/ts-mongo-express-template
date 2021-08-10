@@ -129,12 +129,11 @@ Update the \"main\" section to point to the compiled index.js file:
 Verify that everything is working correctly by starting a simple express server by creating and running an __./src/index.ts__ file using the npm build, clean, dev, and start commands.
 
 ## Express Add Ons
-Add the following modules for adding more advanced functionality to our Express server.
+Add the following modules for adding more advanced functionality to our Express server. Note, __cors__ is not required if just building an API server.
 
 ```bash
 $ npm install --save cors app-root-path dotenv winston express-winston
-$ npm install --save-dev @types/cors @types/app-root-path @types/dotenv
-$ npm install --save-dev @types/winston
+$ npm install --save-dev @types/cors @types/app-root-path
 ```
 
 See the __./src/index.ts, ./src/config/config.ts, .env, and ./src/config/winston.ts__ to see how to use the just installed modules.

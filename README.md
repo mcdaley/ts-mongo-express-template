@@ -18,6 +18,7 @@ The project will have the following structure
 ```
 ${project}/src
           /dist
+          /tests
           /logs
           /node_modules
           package.json
@@ -143,7 +144,6 @@ For the framework, I'm going to use the native mongodb driver instead of mongoos
 
 ```bash
 $ npm install --save mongodb
-$ npm install --save-dev @types/mongodb
 ```
 
 ### Configure MongoDB Connection
